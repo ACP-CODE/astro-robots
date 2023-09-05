@@ -31,7 +31,7 @@ With just one click, our robot.txt generator allows you to easily create optimiz
 <summary><strong>Validated Bots:</strong> Uses the most recent <i>Validated Bots<sup>[<a href="https://radar.cloudflare.com/traffic/verified-bots" target="_blank">2</a>]</sup></i> from leading search engines.</summary>
 <br>
 
-Stay ahead of the curve with the most up-to-date verified bot user-agents from search leaders like Google, Bing, Yahoo, Yandex, and Baidu. 
+Stay ahead of the curve with the most up-to-date verified bot user-agents from search leaders like Google, Bing, Yahoo, Yandex, and Baidu.
 
 - Uses latest verified bot user-agents from major search engines.
 - Integrates real-world bot data to optimize for emerging bots.
@@ -42,7 +42,7 @@ Stay ahead of the curve with the most up-to-date verified bot user-agents from s
 </details>
 
 <details>
-<summary><strong>Flexible Configuration:</strong> Streamline bot crawling via universal rules across all bots or customized settings per bot.</summary>
+<summary><strong>Flexible Configuration:</strong> Streamline bot crawling with universal rules or customized settings per bot.</summary>
 <br>
 
 - Allows unified rule application OR customization per bot for flexibility
@@ -60,7 +60,7 @@ Stay ahead of the curve with the most up-to-date verified bot user-agents from s
 - VSCode integration means complex configs aren't required
 - Streamlines process so users can concentrate on building
 
-> For localization support, it is recommended that you install _Commment Translate<sup>[[4](#https://marketplace.visualstudio.com/items?itemName=intellsmi.comment-translate)]</sup>_ for a better experience.
+> For localization support, it is recommended that you install _Commment Translate<sup>[[3.1](#https://marketplace.visualstudio.com/items?itemName=intellsmi.comment-translate)]</sup>_ for a better experience.
 
 <br>
 </details>
@@ -68,8 +68,7 @@ Stay ahead of the curve with the most up-to-date verified bot user-agents from s
 ## Installation
 
 <details>
-
-<summary><strong>Quick Install</strong> (Astro Official Support)</summary>
+<summary><strong>Quick Install</strong> (Astro Official Support)</summary><br>
 
 Install the `astro-robots` package into any Astro project using your preferred package manager:
 
@@ -84,6 +83,7 @@ $ yarn astro add astro-robots
 $ pnpx astro add astro-robots
 ```
 
+<br>
 </details>
 
 ### Manual Install
@@ -132,7 +132,7 @@ Sitemap: https://example.com/sitemap-index.xml
 
 <details>
 
-<summary><strong>Getting Started</strong> (A hands-on crash course with example walkthroughs).</summary>
+<summary><strong>Getting Started</strong> (A hands-on crash course with example walkthroughs).</summary><br>
 
 To configure this integration, pass an object to the `robots()` function call in `astro.config.*` file.
 
@@ -165,6 +165,10 @@ export default defineConfig({
           crawlDelay: 5,
           cleanParam: ["sid /", "s /forum/showthread"],
         },
+        {
+          userAgent:'BLEXBot',
+          disallow: ['/assets','/uploades/1989-08-21/*jpg$']
+        }
       ],
     }),
   ],
@@ -186,12 +190,17 @@ User-agent: Yeti
 User-agent: Baiduspider
 User-agent: 360Spider
 User-agent: *
+User-agent: 
 Allow: /
 Disallow: /admin
 Disallow: /login
 Crawl-delay: 5
 Clean-param: sid /
 Clean-param: s /forum/showthread
+
+User-agent: BLEXBot
+Disallow: /assets
+Disallow: /uploades/1989-08-21/*jpg$
 
 # crawling rule(s) for above bots
 Sitemap: https://example.com/sitemap.xml
@@ -201,27 +210,26 @@ Host: example.com
 
 > **Note:** Some directives (`Host` `Clean-param` `Crawl-delay`) are only supported by a few crawlers. For example from February 22, 2018, Yandex ignores the Crawl-delay directive. To set the speed at which robots downloads the site pages, use the [Site crawl rate](https://yandex.com/support/webmaster/service/crawl-rate.html#crawl-rate) in Yandex.Webmaster.
 
+<br>
 </details>
 
 <details>
 
-<summary><strong>Integration API</strong> (Add new directives and behaviors for your <i>robots.txt</i> file with only a few lines of config).</summary>
+<summary><strong>Integration API</strong> (Add new directives and behaviors for your <i>robots.txt</i> file with only a few lines of config).</summary><br>
 
 Through the above examples, you must have understood how `astro-robots` works. Next, let us learn more about its interface.
 
-|        Name         |                     Type                      | Required |           Default value            |   Directive   |
-| :-----------------: | :-------------------------------------------: | :------: | :--------------------------------: | :-----------: |
-|        host         |              `Boolean` `String`               |    No    |              `false`               |    `Host`     |
-|       sitemap       |         `Boolean` `String` `String[]`         |    No    |               `true`               |   `Sitemap`   |
-|      policy[]       |                   `Strig[]`                   |    No    | `[{ userAgent: '*', allow: '/' }]` |       -       |
-| plicy[{userAgent}]  | UserAgentType<sup>[[3](#useragenttype)]</sup> |   Yes    |                 -                  | `User-agent`  |
-|   plicy[{allow}]    |              `String` `String[]`              |    \*    |                 -                  |    `Allow`    |
-|  plicy[{disAllow}]  |              `String` `String[]`              |    \*    |                 -                  |  `Disallow`   |
-| plicy[{crawlDelay}] |                   `Number`                    | Optional |                 -                  | `Crawl-delay` |
-| plicy[{cleanParam}] |              `String` `String[]`              | Optional |                 -                  | `Clean-param` |
+|        Name         |                      Type                       | Required |           Default value            |   Directive   |
+| :-----------------: | :---------------------------------------------: | :------: | :--------------------------------: | :-----------: |
+|        host         |               `Boolean` `String`                |    No    |              `false`               |    `Host`     |
+|       sitemap       |          `Boolean` `String` `String[]`          |    No    |               `true`               |   `Sitemap`   |
+|      policy[]       |                    `Strig[]`                    |    No    | `[{ userAgent: '*', allow: '/' }]` |       -       |
+| plicy[{userAgent}]  | `UserAgentType`<sup>[[4](#useragenttype)]</sup> |   Yes    |                 -                  | `User-agent`  |
+|   plicy[{allow}]    |               `String` `String[]`               |    \*    |                 -                  |    `Allow`    |
+|  plicy[{disAllow}]  |               `String` `String[]`               |    \*    |                 -                  |  `Disallow`   |
+| plicy[{crawlDelay}] |                    `Number`                     | Optional |                 -                  | `Crawl-delay` |
+| plicy[{cleanParam}] |               `String` `String[]`               | Optional |                 -                  | `Clean-param` |
 
-> **Remark:**
->
 > - `*` [ Optional ] At least one or more `allow` or `disallow` entries per rule.
 > - `-` [ Undefinded ] There is no initial value in the default configuration.
 
@@ -229,10 +237,10 @@ Through the above examples, you must have understood how `astro-robots` works. N
 
 **type:** `UserAgentType` `(UserAgentType)[]`
 
-- UserAgentType - `String` Stored are the latest verified bots.
-- (UserAgentType)[] - `String[]` Make it work in array mode too.
+- UserAgentType - `UnionTypes` Stored are the latest verified bots.
+- (UserAgentType)[] - `UnionTypeArray` Make it work in array mode too.
 
-*For more detailed content, please refer to [JSDoc consts](./dist/consts.d.ts).*
+_For more detailed content, please refer to [JSDoc consts](./dist/consts.d.ts)._
 
 ```ts
 export type UsertAgentType =
@@ -244,13 +252,15 @@ export type UsertAgentType =
 
 Still clueless, don't worry! We have powerful [JSDoc support](./dist/index.d.ts), whether you are an SEO expert or a novice, you can easily manage it.
 
-Now just use this in your Astro project and it will tell everything about `robots.txt`.
+Now just use `astro-robots` in your Astro project and it will tell everything about `robots.txt`.
 
 </details>
 
 ### Examples
 
-Visit our [Official Documentation]() to learn more.
+Visit the [Yandex Support](https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend) to learn more about directives.
+
+We're planning to release more practical examples to cater to the mainstream search engine market.
 
 ## Changelog
 
