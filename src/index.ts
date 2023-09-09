@@ -135,7 +135,7 @@ export interface PolicyOptions {
   cleanParam?: string | string[];
 }
 
-function getFileSizeInKilobytes(filename: string): number {
+function getFileSizeInKilobytes(filename: URL): number {
   const stats = fs.statSync(filename);
   const fileSizeInBytes = stats.size;
   const fileSizeInKilobytes = fileSizeInBytes / 1024;
@@ -175,8 +175,8 @@ export default function createRobotsIntegration(astroConfig: RobotsConfig): Astr
           fs.writeFileSync(new URL('robots.txt', dir), generateContent(megeredConfig, finalSiteMapHref), 'utf-8');
         });
 
-        const fileSize = getFileSizeInKilobytes(`${config.outDir.pathname}/robots.txt`);
-        
+        const fileSize = getFileSizeInKilobytes(new URL('robots.txt', dir));
+
         logger.info(`\x1b[2mCompleted in ${executionTime}ms\x1b[22m`);
         printWarnInfo(fileSize);
         logger.success(`\x1b[32mgenerated\x1b[0m 'robots.txt' ${fileSize} KB`);

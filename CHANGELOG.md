@@ -2,6 +2,12 @@
 
 This file documents all significant modifications made to the Astro Integration `astro-robots`.
 
+## 1.0.2
+
+### Patch Changes
+
+- Bug - Fixed the issue that prevented the correct reading of file size information when output `server`, `hybrid` not `static`.
+
 ## 1.0.1
 
 ### Minor Changes
