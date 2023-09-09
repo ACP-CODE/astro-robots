@@ -1,0 +1,46 @@
+{
+  "private": false,
+  "name": "astro-robots",
+  "description": "The lightweight robots.txt generator makes it simple to create compliant robots.txt files specifically for Astro integrations, with zero-config support, an intuitive JSDoc API, and always up-to-date verified bots user-agents.",
+  "version": "1.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/consts.d.ts"
+  ],
+  "scripts": {
+    "clear": "rm -rf ./dist",
+    "build": "npm run clear && at-scripts create-pkg-name && at-scripts build && tsc -p tsconfig.build.json"
+  },
+  "keywords": [
+    "withastro",
+    "astro-integration",
+    "robots.txt generator",
+    "seo assistant",
+    "verified bots",
+    "verified robots",
+    "robots",
+    "robots-txt",
+    "astro-robots"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ACP-CODE/astro-robots.git"
+  },
+  "author": "Junlin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ACP-CODE/astro-robots/issues"
+  },
+  "homepage": "https://github.com/ACP-CODE/astro-robots#readme",
+  "devDependencies": {
+    "astro": "^3.0.6",
+    "typescript": "^5.2.2"
+  }
+}
