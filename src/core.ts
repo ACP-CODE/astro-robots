@@ -175,7 +175,10 @@ export function generateContent(config: RobotsConfig, siteMapHref: string): stri
   return content;
 }
 
-export function printWarnInfo(fileSize: number) {
+export function printInfo(fileSize: number, executionTime: number) {
+
+  logger.info(`\x1b[2mCompleted in ${executionTime}ms\x1b[22m`);
+
   if (fileSize > 10) {
     console.log(`\n\x1b[42m generating 'robots.txt' file \x1b[0m`);
     const warnMsg = [
@@ -185,4 +188,6 @@ export function printWarnInfo(fileSize: number) {
     ]
     console.log(`${warnMsg.join('\n')}`);
   }
+
+  logger.success(`\x1b[32mgenerated\x1b[0m 'robots.txt' ${fileSize} KB`);
 }

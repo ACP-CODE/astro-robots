@@ -4,8 +4,15 @@ import type { UsertAgentType } from './consts';
 import fs from "node:fs";
 
 import { packageName } from './data/pkg-name';
-import { generateContent, printWarnInfo } from './core';
-import { measureExecutionTime, logger } from './utils';
+import { generateContent, printInfo } from './core';
+import { measureExecutionTime } from './utils';
+
+function getFileSizeInKilobytes(filename: URL): number {
+  const stats = fs.statSync(filename);
+  const fileSizeInBytes = stats.size;
+  const fileSizeInKilobytes = fileSizeInBytes / 1024;
+  return fileSizeInKilobytes;
+}
 
 export interface RobotsConfig {
   /**
@@ -135,13 +142,6 @@ export interface PolicyOptions {
   cleanParam?: string | string[];
 }
 
-function getFileSizeInKilobytes(filename: URL): number {
-  const stats = fs.statSync(filename);
-  const fileSizeInBytes = stats.size;
-  const fileSizeInKilobytes = fileSizeInBytes / 1024;
-  return fileSizeInKilobytes;
-}
-
 const defaultConfig: RobotsConfig = {
   sitemap: true,
   host: false,
@@ -174,12 +174,8 @@ export default function createRobotsIntegration(astroConfig: RobotsConfig): Astr
         executionTime = measureExecutionTime(() => {
           fs.writeFileSync(new URL('robots.txt', dir), generateContent(megeredConfig, finalSiteMapHref), 'utf-8');
         });
-
         const fileSize = getFileSizeInKilobytes(new URL('robots.txt', dir));
-
-        logger.info(`\x1b[2mCompleted in ${executionTime}ms\x1b[22m`);
-        printWarnInfo(fileSize);
-        logger.success(`\x1b[32mgenerated\x1b[0m 'robots.txt' ${fileSize} KB`);
+        printInfo(fileSize, executionTime);
       },
     },
   };
