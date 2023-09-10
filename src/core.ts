@@ -1,4 +1,3 @@
-import type { AstroIntegrationLogger } from "astro";
 import type { RobotsConfig } from ".";
 
 import { logger } from "./utils";
