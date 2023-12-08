@@ -2,6 +2,10 @@
 
 This file documents all significant modifications made to the Astro Integration `astro-robots`.
 
+## 2.0.0
+
+- Update to AstroIntegrationLogger.
+
 ## 1.0.2
 
 ### Patch Changes

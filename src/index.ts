@@ -1,7 +1,7 @@
 import type { AstroConfig, AstroIntegration } from 'astro';
 import type { UsertAgentType } from './consts';
 
-import fs from "node:fs";
+import fs from "fs";
 
 import { packageName } from './data/pkg-name';
 import { generateContent, printInfo } from './core';
@@ -170,12 +170,12 @@ export default function createRobotsIntegration(astroConfig: RobotsConfig): Astr
       'astro:build:start': () => {
         finalSiteMapHref = new URL(config.base, config.site).href;
       },
-      'astro:build:done': async ({ dir }) => {
+      'astro:build:done': async ({ dir, logger }) => {
         executionTime = measureExecutionTime(() => {
-          fs.writeFileSync(new URL('robots.txt', dir), generateContent(megeredConfig, finalSiteMapHref), 'utf-8');
+          fs.writeFileSync(new URL('robots.txt', dir), generateContent(megeredConfig, finalSiteMapHref, logger), 'utf-8');
         });
         const fileSize = getFileSizeInKilobytes(new URL('robots.txt', dir));
-        printInfo(fileSize, executionTime);
+        printInfo(fileSize, executionTime, logger);
       },
     },
   };

@@ -18,7 +18,7 @@ Robots.txt file are simple yet crucial for your website's SEO. A single misstep 
 
 ## Installation
 
-> This package is compatible with Astro 2.0 and above, which support the Integrations API.
+> This package is compatible with **Astro 3.0.0** and above, due to the use of AstroIntegrationLogger.
 
 To automate the installation, use the `astro add` command-line tool. You can initialize it via `npx`, `yarn`, or `pnpm` based on your preference.
 

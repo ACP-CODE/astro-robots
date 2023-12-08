@@ -1,22 +1,22 @@
 import type { RobotsConfig } from ".";
 
-import { logger } from "./utils";
+import type { AstroIntegrationLogger } from "astro";
 
-function validateHost(host: string) {
+function validateHost(host: string, logger:AstroIntegrationLogger) {
 
   const hostPattern = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$/;
 
   if (typeof host !== 'string') {
-    throwMsg('Host must be a string', 'error');
+    throwMsg('Host must be a string', 'error', logger);
   }
 
   if (!hostPattern.test(host)) {
-    throwMsg('Host is invalid', 'error')
+    throwMsg('Host is invalid', 'error', logger)
   }
 
 }
 
-function generateHostContent(config: RobotsConfig) {
+function generateHostContent(config: RobotsConfig, logger:AstroIntegrationLogger) {
   let content = '';
 
   if (config.host === true) {
@@ -24,9 +24,9 @@ function generateHostContent(config: RobotsConfig) {
   } else if (config.host === false) {
     // do not specify host
   } else if (typeof config.host === 'number') {
-    validateHost(config.host);
+    validateHost(config.host, logger);
   } else if (typeof config.host === 'string' && config.host !== 'localhost') {
-    validateHost(config.host);
+    validateHost(config.host, logger);
 
     content += `Host: ${config.host}\n`;
   }
@@ -34,28 +34,28 @@ function generateHostContent(config: RobotsConfig) {
   return content;
 }
 
-function validateUrl(url: string) {
+function validateUrl(url: string, logger:AstroIntegrationLogger) {
   // const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html)$/;
   const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html|xml.gz|txt.gz|json|xhtml)$/i;
   if (!urlPattern.test(url)) {
-    throwMsg(`sitemap [URL is invalid or not a valid sitemap file.]`, true)
+    throwMsg(`sitemap [URL is invalid or not a valid sitemap file.]`, true, logger)
   }
 }
 
-function generateSitemapContent(config: RobotsConfig, siteHref: string) {
+function generateSitemapContent(config: RobotsConfig, siteHref: string, logger:AstroIntegrationLogger) {
 
   let content = '';
 
   if (config.sitemap === true) {
     content += `Sitemap: ${siteHref}sitemap-index.xml\n`;
   } else if (typeof config.sitemap === 'number') {
-    throwMsg(`sitemap [URL is invalid or not a valid sitemap file.]`, true)
+    throwMsg(`sitemap [URL is invalid or not a valid sitemap file.]`, true, logger)
   } else if (typeof config.sitemap === 'string') {
-    validateUrl(config.sitemap);
+    validateUrl(config.sitemap, logger);
     content += `Sitemap: ${config.sitemap}\n`;
   } else if (Array.isArray(config.sitemap)) {
     for (let url of config.sitemap) {
-      validateUrl(url);
+      validateUrl(url, logger);
       content += `Sitemap: ${url}\n`;
     }
   }
@@ -64,11 +64,11 @@ function generateSitemapContent(config: RobotsConfig, siteHref: string) {
 
 }
 
-function throwMsg(msg: string, type: boolean | 'warn' | 'error' | 'info') {
+function throwMsg(msg: string, type: boolean | 'warn' | 'error' | 'info', logger: AstroIntegrationLogger) {
   const sentenceHead = `\x1b[1mRefer:\x1b[22m`;
 
   const failured = (message: string) => {
-    logger.info(`\x1b[31mFailured!\x1b[39m`);
+    logger.info(`\x1b[31mFailured! [${message}]\x1b[39m`);
   };
 
   const warn = (message: string) => {
@@ -91,7 +91,7 @@ function throwMsg(msg: string, type: boolean | 'warn' | 'error' | 'info') {
   }
 }
 
-export function generateContent(config: RobotsConfig, siteMapHref: string): string {
+export function generateContent(config: RobotsConfig, siteMapHref: string, logger: AstroIntegrationLogger): string {
   let content = '';
 
   for (const policy of config.policy ?? []) {
@@ -103,24 +103,25 @@ export function generateContent(config: RobotsConfig, siteMapHref: string): stri
         throwMsg(
 
           `policy[${index}].userAgent [Required, one or more per group].\n${JSON.stringify(policy, null, 2)}`,
-          (!!policy.userAgent)
+          (!!policy.userAgent),
+          logger
         );
       }
 
       if ((!policy.allow && !policy.disallow) || (policy.allow?.length === 0 && policy.disallow?.length === 0)) {
         throwMsg(
-
           `policy[${index}] [At least one or more 'disallow' or 'allow' entries per rule].\n${JSON.stringify(policy, null, 2)}`,
-          (!policy.allow && !policy.disallow)
+          (!policy.allow && !policy.disallow),
+          logger
         );
       }
 
       if (policy.crawlDelay && typeof policy.crawlDelay !== 'number') {
-        throwMsg(`policy[${index}].crawlDelay [Must be number].\n${JSON.stringify(policy, null, 2)}`, false);
+        throwMsg(`policy[${index}].crawlDelay [Must be number].\n${JSON.stringify(policy, null, 2)}`, false, logger);
       } else if (policy.crawlDelay !== undefined && policy?.crawlDelay < 0) {
-        throwMsg(`policy[${index}].crawlDelay [Must be a positive number].\n${JSON.stringify(policy, null, 2)}`, false);
+        throwMsg(`policy[${index}].crawlDelay [Must be a positive number].\n${JSON.stringify(policy, null, 2)}`, false, logger);
       } else if (policy.crawlDelay !== undefined && (policy?.crawlDelay < 0.1 || policy.crawlDelay > 60)) {
-        throwMsg(`policy[${index}].crawlDelay [Must be between 0.1 and 60 seconds].\n${JSON.stringify(policy, null, 2)}`, false);
+        throwMsg(`policy[${index}].crawlDelay [Must be between 0.1 and 60 seconds].\n${JSON.stringify(policy, null, 2)}`, false, logger);
       }
 
     });
@@ -168,18 +169,18 @@ export function generateContent(config: RobotsConfig, siteMapHref: string): stri
 
   }
 
-  content += generateSitemapContent(config, siteMapHref);
-  content += generateHostContent(config);
+  content += generateSitemapContent(config, siteMapHref, logger);
+  content += generateHostContent(config, logger);
 
   return content;
 }
 
-export function printInfo(fileSize: number, executionTime: number) {
+export function printInfo(fileSize: number, executionTime: number, logger: AstroIntegrationLogger) {
 
   logger.info(`\x1b[2mCompleted in ${executionTime}ms\x1b[22m`);
 
   if (fileSize > 10) {
-    console.log(`\n\x1b[42m generating 'robots.txt' file \x1b[0m`);
+    console.log(`\n\x1b[42m\x1b[30m generating 'robots.txt' file \x1b[39m\x1b[0m`);
     const warnMsg = [
       `\n\x1b[33m(!) Keep your 'robots.txt' file size under 10 KB for best crawling results.`,
       `- To keep it low, only include directives that are necessary for your site.`,
@@ -188,5 +189,5 @@ export function printInfo(fileSize: number, executionTime: number) {
     console.log(`${warnMsg.join('\n')}`);
   }
 
-  logger.success(`\x1b[32mgenerated\x1b[0m 'robots.txt' ${fileSize} KB`);
+  logger.info(`\x1b[32mgenerated\x1b[0m 'robots.txt' ${fileSize} KB`);
 }
