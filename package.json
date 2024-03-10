@@ -2,7 +2,7 @@
   "private": false,
   "name": "astro-robots",
   "description": "The lightweight robots.txt generator makes it simple to create compliant robots.txt files specifically for Astro integrations, with zero-config support, an intuitive JSDoc API, and always up-to-date verified bots user-agents.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",

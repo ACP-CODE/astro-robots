@@ -1,4 +1,5 @@
 import type { RobotsConfig } from ".";
+import path from "node:path";
 
 import type { AstroIntegrationLogger } from "astro";
 
@@ -175,9 +176,7 @@ export function generateContent(config: RobotsConfig, siteMapHref: string, logge
   return content;
 }
 
-export function printInfo(fileSize: number, executionTime: number, logger: AstroIntegrationLogger) {
-
-  logger.info(`\x1b[2mCompleted in ${executionTime}ms\x1b[22m`);
+export function printInfo(fileSize: number, executionTime: number, logger: AstroIntegrationLogger, destDir: string) {
 
   if (fileSize > 10) {
     console.log(`\n\x1b[42m\x1b[30m generating 'robots.txt' file \x1b[39m\x1b[0m`);
@@ -189,5 +188,5 @@ export function printInfo(fileSize: number, executionTime: number, logger: Astro
     console.log(`${warnMsg.join('\n')}`);
   }
 
-  logger.info(`\x1b[32mgenerated\x1b[0m 'robots.txt' ${fileSize} KB`);
+  logger.info(`\`robots.txt\` (${fileSize}KB) created at \`${path.relative(process.cwd(), destDir)}\` in ${executionTime}ms`);
 }

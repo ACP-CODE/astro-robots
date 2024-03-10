@@ -2,6 +2,7 @@ import type { AstroConfig, AstroIntegration } from 'astro';
 import type { UsertAgentType } from './consts';
 
 import fs from "fs";
+import { fileURLToPath } from "node:url";
 
 import { packageName } from './data/pkg-name';
 import { generateContent, printInfo } from './core';
@@ -175,7 +176,8 @@ export default function createRobotsIntegration(astroConfig: RobotsConfig): Astr
           fs.writeFileSync(new URL('robots.txt', dir), generateContent(megeredConfig, finalSiteMapHref, logger), 'utf-8');
         });
         const fileSize = getFileSizeInKilobytes(new URL('robots.txt', dir));
-        printInfo(fileSize, executionTime, logger);
+        const destDir = fileURLToPath(dir);
+        printInfo(fileSize, executionTime, logger, destDir);
       },
     },
   };
