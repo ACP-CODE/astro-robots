@@ -4,7 +4,7 @@ This file documents all significant modifications made to the Astro Integration 
 
 ## 2.0.1
 
-- Update to loggerInfo.
+- Update the loggerInfo.
 
 ## 2.0.0
 
