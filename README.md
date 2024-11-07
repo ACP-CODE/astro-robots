@@ -8,7 +8,7 @@
 
 It simplifies SEO management with a reliable robots.txt generator for Astro projects, offering zero-config setup and [Verified Bots](https://radar.cloudflare.com/traffic/verified-bots) support.
 
-[![Build Status](https://github.com/ACP-CODE/astro-favicons/actions/workflows/release.yaml/badge.svg?style=flat-square)](https://github.com/ACP-CODE/astro-favicons/actions/workflows/release.yaml)
+[![Build Status](https://github.com/ACP-CODE/astro-robots/actions/workflows/release.yaml/badge.svg?style=flat-square)](https://github.com/ACP-CODE/astro-robots/actions/workflows/release.yaml)
 ![NPM Version](https://img.shields.io/npm/v/astro-robots?labelColor=black&color=light)
 ![NPM Downloads](https://img.shields.io/npm/d18m/astro-robots?labelColor=balck)
 
