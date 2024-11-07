@@ -1,52 +1,16 @@
-import type { AstroConfig, AstroIntegration } from 'astro';
-import type { UsertAgentType } from './consts';
-
-import fs from "fs";
+import type { AstroConfig, AstroIntegration } from "astro";
+import type { Policy } from "./types";
+import fs from "fs/promises";
 import { fileURLToPath } from "node:url";
+import { generate, logInfo } from "./core";
+import { measureExecutionTime, getFileSizeInKilobytes } from "./utils";
 
-import { packageName } from './data/pkg-name';
-import { generateContent, printInfo } from './core';
-import { measureExecutionTime } from './utils';
-
-function getFileSizeInKilobytes(filename: URL): number {
-  const stats = fs.statSync(filename);
-  const fileSizeInBytes = stats.size;
-  const fileSizeInKilobytes = fileSizeInBytes / 1024;
-  return fileSizeInKilobytes;
-}
-
-export interface RobotsConfig {
-  /**
-   * @default false
-   * @description
-   * [ Optional ] Some crawlers(Yandex) support and only accept domain names.
-   * @example
-   * ```ts
-   * integrations:[
-   *  robots({
-   *    host: siteUrl.replace(/^https?:\/\/|:\d+/g, "")
-   *  })
-   * ]
-   * ```
-   */
-  host?: boolean | string;
+export interface RobotsOptions {
   /**
    * @description
-   * [ Optional, zero or more per file ] The location of a sitemap for this website.
-   * @example
-   * ```ts
-   * sitemap: [
-   *  "https://example.com/sitemap.xml",
-   *  "https://www.example.com/sitemap.xml"
-   * ]
-   * ```
-   * The value of the [SITEMAP](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#sitemap) field is case-sensitive.
-   */
-  sitemap?: boolean | string | string[];
-  /**
-   * @description
-   * [ Optional ] List of `policy` rules.
+   * Used to specify rules that apply to one or more robots.
    * @default
+   * All robots are allowed.
    * ```ts
    * policy:[
    *  {
@@ -57,127 +21,78 @@ export interface RobotsConfig {
    * ```
    * For more help, refer to [SYNTAX](https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend) by Yandex.
    */
-  policy?: PolicyOptions[] | undefined;
-}
-export interface PolicyOptions {
+  policy: Policy[];
   /**
    * @description
-   * [ Required ] Indicates the robot to which the rules listed in `robots.txt` apply.
+   * The location of a sitemap for this website.
    * @example
    * ```ts
-   * policy:[
-   *  {
-   *    userAgent: [
-   *      'Googlebot',
-   *      'Applebot',
-   *      'Baiduspider',
-   *      'bingbot'
-   *    ],
-   *    // crawling rule(s) for above bots
-   *  }
+   * sitemap: [
+   *  "https://example.com/sitemap.xml",
+   *  "https://www.example.com/sitemap.xml"
    * ]
    * ```
-   * Verified bots, refer to [DITIG](https://www.ditig.com/robots-txt-template#regular-template) or [Cloudflare Radar](https://radar.cloudflare.com/traffic/verified-bots).
+   * The value of the [SITEMAP](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#sitemap)
+   * field is case-sensitive.
    */
-  userAgent?: UsertAgentType | (UsertAgentType)[];
+  sitemap?: boolean | string | string[];
   /**
+   * @default null
    * @description
-   * [ At least one or more `allow` or `disallow` entries per rule ] Allows indexing site sections or individual pages.
+   * Specify the value of `Host`, some crawlers(Yandex) support and only accept domain names.
    * @example
    * ```ts
-   * policy:[{allow:["/"]}]
+   * host: siteUrl.replace(/^https?:\/\/|:\d+/g, "")
    * ```
-   * Path-based URL matching, refer to [SYNTAX](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#url-matching-based-on-path-values) via Google.
    */
-  allow?: string | string[];
-  /**
-   * @description
-   * [ At least one or more `disallow` or `allow` entries per rule ] Prohibits indexing site sections or individual pages.
-   * @example
-   * ```ts
-   * policy:[
-   *  {
-   *    disallow:[
-   *      "/admin",
-   *      "/uploads/1989-08-21/*.jpg$"
-   *    ]
-   *  }
-   * ]
-   * ```
-   * Path-based URL matching, refer to [SYNTAX](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#url-matching-based-on-path-values) via Google.
-   */
-  disallow?: string | string[];
-  /**
-   * @description
-   * [ Optional ] Specifies the minimum interval (in seconds) for the search robot to wait after loading one page, before starting to load another.
-   *
-   * @example
-   * ```ts
-   * policy:[{crawlDelay:5}]
-   * ```
-   * About the [Crawl-delay](https://yandex.com/support/webmaster/robot-workings/crawl-delay.html#crawl-delay) directive.
-   */
-  crawlDelay?: number;
-  /**
-   * @description
-   * [ Optional ] Indicates to the robot that the page URL contains parameters (like UTM tags) that should be ignored when indexing it.
-   *
-   * @example
-   * ```hash
-   * # for URLs like:
-   * www.example2.com/index.php?page=1&sid=2564126ebdec301c607e5df
-   * www.example2.com/index.php?page=1&sid=974017dcd170d6c4a5d76ae
-   * ```
-   * ```ts
-   * policy:[
-   *  {
-   *    cleanParam: [
-   *      "sid /index.php",
-   *    ]
-   *  }
-   * ]
-   * ```
-   * For additional examples, please consult
-   * Yandex's [SYNTAX](https://yandex.com/support/webmaster/robot-workings/clean-param.html#clean-param__additional) guide.
-   */
-  cleanParam?: string | string[];
+  host?: null | string;
 }
 
-const defaultConfig: RobotsConfig = {
-  sitemap: true,
-  host: false,
+const defaultConfig: RobotsOptions = {
   policy: [
     {
       userAgent: "*",
-      allow: "/"
-    }
-  ]
-}
+      allow: "/",
+    },
+  ],
+  sitemap: true,
+  host: null,
+};
 
-export default function createRobotsIntegration(astroConfig: RobotsConfig): AstroIntegration {
-
+export default function robots(options?: RobotsOptions): AstroIntegration {
   let config: AstroConfig;
+
   let finalSiteMapHref: string;
   let executionTime: number;
 
-  const megeredConfig = { ...defaultConfig, ...astroConfig };
+  const opts = { ...defaultConfig, ...options };
 
   return {
-    name: packageName,
+    name: "astro-robots",
     hooks: {
-      'astro:config:setup': ({ config: cfg }) => {
+      "astro:config:setup": ({ config: cfg }) => {
         config = cfg;
       },
-      'astro:build:start': () => {
-        finalSiteMapHref = new URL(config.base, config.site).href;
+      "astro:build:start": () => {
+        if (config.site) {
+          finalSiteMapHref = new URL(config.base, config.site).href;
+        }
       },
-      'astro:build:done': async ({ dir, logger }) => {
-        executionTime = measureExecutionTime(() => {
-          fs.writeFileSync(new URL('robots.txt', dir), generateContent(megeredConfig, finalSiteMapHref, logger), 'utf-8');
+      "astro:build:done": async ({ dir, logger }) => {
+        const fileURL = new URL("robots.txt", dir);
+
+        executionTime = measureExecutionTime(async () => {
+          await fs.writeFile(
+            fileURL,
+            generate(opts, finalSiteMapHref, logger),
+            "utf-8",
+          );
         });
-        const fileSize = getFileSizeInKilobytes(new URL('robots.txt', dir));
+
+        const fileSize = await getFileSizeInKilobytes(fileURL);
         const destDir = fileURLToPath(dir);
-        printInfo(fileSize, executionTime, logger, destDir);
+
+        logInfo(fileSize, executionTime, logger, destDir);
       },
     },
   };

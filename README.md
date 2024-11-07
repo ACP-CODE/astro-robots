@@ -6,15 +6,13 @@
 
 # astro-robots
 
-A lightweight `robots.txt` generator designed specifically for [Astro Integration](http://www.npmjs.com/package/astro) . With zero-config support, an intuitive JSDoc API, and up-to-date [Verified Bots](https://radar.cloudflare.com/traffic/verified-bots) support
+It simplifies SEO management with a reliable robots.txt generator for Astro projects, offering zero-config setup and [Verified Bots](https://radar.cloudflare.com/traffic/verified-bots) support.
 
-[Features](#features) · [Installation](#installation) · [Usage](#usage) · [Configuration](#configuration) · [Change Log](/CHANGELOG.md)
+[![Build Status](https://github.com/ACP-CODE/astro-favicons/actions/workflows/release.yaml/badge.svg?style=flat-square)](https://github.com/ACP-CODE/astro-favicons/actions/workflows/release.yaml)
+![NPM Version](https://img.shields.io/npm/v/astro-robots?labelColor=black&color=light)
+![NPM Downloads](https://img.shields.io/npm/d18m/astro-robots?labelColor=balck)
 
 </div>
-
-## Overview
-
-Robots.txt file are simple yet crucial for your website's SEO. A single misstep can prevent search engines from accessing important content. With `astro-robots` help, you can avoid common misconfigurations and ensure optimal SEO performance.
 
 ## Installation
 
@@ -25,23 +23,26 @@ To automate the installation, use the `astro add` command-line tool. You can ini
 ```sh
 npx astro add astro-robots
 ```
+
+## Usage
+
+<details>
+<summary>Manual Configuration</summary>
 Alternatively, you can manually install it by running the following command in your terminal:
 
 ```sh
 npm install astro-robots
 ```
 
-## Usage
-
 To use this integration, add it to your `astro.config.*` file using the integrations property:
 
 ```ts
-// astro.config.mjs
+// @ts-check
 import { defineConfig } from "astro/config";
 import robots from "astro-robots"; // Add code manually
 
 export default defineConfig({
-  site: "https://example.com";
+  site: "https://example.com"; // If you want to support `@astrojs/sitemap` please provide this value
   integrations: [robots()], // Add code manually
 });
 ```
@@ -62,16 +63,17 @@ Allow: /
 Sitemap: https://example.com/sitemap-index.xml
 ```
 
-## Configuration
+</details>
 
 <details>
 
-<summary><b>Getting Started</b> - A hands-on crash course with example walkthroughs.</summary><br>
+<summary>Getting Started with Reference</summary><br>
 
 To configure the integration, pass an object to the `robots()` function in your `astro.config.*` file:
 
 ```ts
-//....
+// @ts-check
+import { defineConfig } from "astro/config";
 import robots from "astro-robots";
 
 export default defineConfig({
@@ -143,50 +145,10 @@ Host: example.com
 <br>
 </details>
 
-<details>
-<summary>
-<b>Integration API</b> - Customize your robots.txt directives and behaviors.
-
-</summary><br>
-
-Through the above examples, you must have understood how `astro-robots` works. Now, let's learn more about its interface.
-
-|        Name         |                      Type                       | Required |           Default value            |   Directive   |
-| :-----------------: | :---------------------------------------------: | :------: | :--------------------------------: | :-----------: |
-|        host         |               `Boolean` `String`                |    No    |              `false`               |    `Host`     |
-|       sitemap       |          `Boolean` `String` `String[]`          |    No    |               `true`               |   `Sitemap`   |
-|      policy[]       |                    `Strig[]`                    |    No    | `[{ userAgent: '*', allow: '/' }]` |       -       |
-| plicy[{userAgent}]  | `UserAgentType`<sup>[[4](#useragenttype)]</sup> |   Yes    |                 -                  | `User-agent`  |
-|   plicy[{allow}]    |               `String` `String[]`               |    \*    |                 -                  |    `Allow`    |
-|  plicy[{disAllow}]  |               `String` `String[]`               |    \*    |                 -                  |  `Disallow`   |
-| plicy[{crawlDelay}] |                    `Number`                     | Optional |                 -                  | `Crawl-delay` |
-| plicy[{cleanParam}] |               `String` `String[]`               | Optional |                 -                  | `Clean-param` |
-
-> - `*` [ Optional ] At least one or more `allow` or `disallow` entries per rule.
-> - `-` [ Undefinded ] There is no initial value in the default configuration.
-
-#### UserAgentType
-
-**type:** `UserAgentType` `(UserAgentType)[]`
-
-- UserAgentType - `UnionTypes` Stored are the latest verified bots.
-- (UserAgentType)[] - `UnionTypeArray` Make it work in array mode too.
-
-If you still have questions, don't worry! We have powerful [JSDoc](./dist/index.d.ts) support, which makes it easy for both SEO experts and novices to manage.
-
-</details>
-
-<details>
-<summary><b>Practical Examples</b> - Visit the <a href="https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend">Yandex Support</a> to learn more about directives.</summary>
-
-> I'm planning to release more practical examples to cater to the mainstream search engine market.
-</details>
-
-## Need Help or Feedback?
+## Contributing
 
 Submit your issues or feedback on our [GitHub](https://github.com/ACP-CODE/astro-robots/issues) channel.
 
-## Changelog
+## License
 
-Check out the [CHANGELOG.md](CHANGELOG.md) file for a history of changes to this integration.
-
+MIT

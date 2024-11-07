@@ -1,1 +1,2 @@
-export { default as measureExecutionTime } from "./measureExecutionTime"
+export { getFileSizeInKilobytes } from "./size";
+export { measureExecutionTime } from "./time";

@@ -1,4 +1,6 @@
-export default function measureExecutionTime(callback: () => void): number {
+import { performance } from "perf_hooks";
+
+export function measureExecutionTime(callback: () => void): number {
   const startTime = performance.now();
   callback();
   const endTime = performance.now();
