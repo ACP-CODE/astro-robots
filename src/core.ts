@@ -93,7 +93,7 @@ function generateSitemapContent(
   if (options.sitemap === true) {
     if (siteHref) {
       const defaultSitemap = `${siteHref}sitemap-index.xml`;
-      return `Sitemap: ${defaultSitemap}\n`;
+      return `Sitemap: ${defaultSitemap}`;
     } else {
       logger.warn(
         "\x1b[33m`sitemap` is configured as true, but `AstroConfig.site` is not provided. Failed to generate default sitemap URL.\x1b[33m",
