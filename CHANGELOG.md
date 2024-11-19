@@ -8,6 +8,10 @@ This file documents all significant modifications made to the Astro Integration 
 
 - Updates can now be previewed immediately by visiting `http://localhost:4321/robots.txt`, rather than waiting for the heavy build task to complete.
 
+### Bug Fixes
+
+- `dir` may not exist
+
 ## 2.1.0
 
 - Reduce and adjust code logic
