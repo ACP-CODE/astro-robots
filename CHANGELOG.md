@@ -2,6 +2,12 @@
 
 This file documents all significant modifications made to the Astro Integration `astro-robots`.
 
+## 2.2.0
+
+### Major Updates
+
+- Updates can now be previewed immediately by visiting `http://localhost:4321/robots.txt`, rather than waiting for the heavy build task to complete.
+
 ## 2.1.0
 
 - Reduce and adjust code logic
