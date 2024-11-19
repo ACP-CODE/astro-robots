@@ -48,7 +48,7 @@ export interface RobotsOptions {
   host?: null | string;
 }
 
-const defaultConfig: RobotsOptions = {
+const defaults: RobotsOptions = {
   policy: [
     {
       userAgent: "*",
@@ -65,21 +65,39 @@ export default function robots(options?: RobotsOptions): AstroIntegration {
   let finalSiteMapHref: string;
   let executionTime: number;
 
-  const opts = { ...defaultConfig, ...options };
+  const filename = "robots.txt";
+  const opts = { ...defaults, ...options };
 
   return {
     name: "astro-robots",
     hooks: {
       "astro:config:setup": ({ config: cfg }) => {
         config = cfg;
-      },
-      "astro:build:start": () => {
         if (config.site) {
           finalSiteMapHref = new URL(config.base, config.site).href;
         }
       },
+      "astro:server:setup": ({ server, logger }) => {
+        server.middlewares.use(async (req, res, next) => {
+          if (req.url?.startsWith(`/${filename}`)) {
+            res.setHeader("Content-Type", "text/plain");
+            res.setHeader("Cache-Control", "no-cache");
+            res.end(generate(opts, finalSiteMapHref, logger),);
+          } else {
+            next();
+          }
+        });
+      },
       "astro:build:done": async ({ dir, logger }) => {
-        const fileURL = new URL("robots.txt", dir);
+        const fileURL = new URL(filename, dir);
+        const destDir = fileURLToPath(dir);
+
+        try {
+          await fs.mkdir(destDir, { recursive: true });
+        } catch (error) {
+          logger.error(`Error creating directory: ${error}`);
+          return;
+        }
 
         executionTime = measureExecutionTime(async () => {
           await fs.writeFile(
@@ -90,8 +108,6 @@ export default function robots(options?: RobotsOptions): AstroIntegration {
         });
 
         const fileSize = await getFileSizeInKilobytes(fileURL);
-        const destDir = fileURLToPath(dir);
-
         logInfo(fileSize, executionTime, logger, destDir);
       },
     },
