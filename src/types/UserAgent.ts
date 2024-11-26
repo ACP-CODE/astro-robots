@@ -60,6 +60,8 @@ export type SearchEngines = {
   Istella: "istellabot";
   // jike.com / chinaso.com chinese search engine
   Jike: "JikeSpider";
+  // Kagi.com, premium private search engine
+  Kagi: "Kagibot";
   // lycos.com & hotbot.com international search engine
   Lycos: "Lycos";
   // mail.ru russian search engine
