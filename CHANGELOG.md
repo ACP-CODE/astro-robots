@@ -2,6 +2,12 @@
 
 This file documents all significant modifications made to the Astro Integration `astro-robots`.
 
+## 2.3.0
+
+### Major Updates
+
+- **`peerDependencies`** Update `"astro": "^4.0.0 || ^5.0.0"` Compatible with version 5.0.0 and above
+
 ## 2.2.0
 
 ### Major Updates
