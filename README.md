@@ -16,25 +16,30 @@ It simplifies SEO management with a reliable robots.txt generator for Astro proj
 
 ## Installation
 
-> This package is compatible with **Astro 3.0.0** and above, due to the use of AstroIntegrationLogger.
+> The package compatible with Astro 4.0.0 and later.
 
-To automate the installation, use the `astro add` command-line tool. You can initialize it via `npx`, `yarn`, or `pnpm` based on your preference.
+Quickly install with the `astro add` command:
 
 ```sh
 npx astro add astro-robots
 ```
 
+If you run into issues, try with [Manual Setup](#setup) guide.
+
 ## Usage
 
 <details>
-<summary>Manual Configuration</summary>
-Alternatively, you can manually install it by running the following command in your terminal:
+<summary>Manual Setup</summary>
+
+#### Setup
+
+To install manually, run:
 
 ```sh
 npm install astro-robots
 ```
 
-To use this integration, add it to your `astro.config.*` file using the integrations property:
+Add the integration to your Astro config file (`astro.config.*`):
 
 ```ts
 // @ts-check
@@ -62,6 +67,11 @@ Allow: /
 # crawling rule(s) for above bots
 Sitemap: https://example.com/sitemap-index.xml
 ```
+
+#### Live Access
+
+Start the server with `npm run dev`, then access the virtual `robots.txt` at `http://localhost:4321/robots.txt`.
+
 
 </details>
 
