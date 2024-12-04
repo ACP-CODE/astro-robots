@@ -1,6 +1,6 @@
 {
   "name": "astro-robots",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A reliable robots.txt generator for Astro projects, offering zero-config setup and Verified Bots support.",
   "type": "module",
   "main": "./dist/index.mjs",
@@ -19,6 +19,7 @@
   "scripts": {
     "fmt": "prettier --write .",
     "build": "unbuild",
+    "dev": "unbuild --watch",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -41,14 +42,12 @@
   },
   "homepage": "https://github.com/ACP-CODE/astro-robots#readme",
   "devDependencies": {
-    "@types/node": "^22.8.7",
-    "@astrojs/check": "^0.9.4",
-    "typescript": "^5.6.3",
-    "astro": "^4.16.8",
-    "prettier": "^3.3.3",
+    "@types/node": "^22.10.1",
+    "astro": "^4.0.3",
+    "prettier": "^3.4.1",
     "unbuild": "^2.0.0"
   },
   "peerDependencies": {
-    "astro": "^4.0.0"
+    "astro": "^4.0.0 || ^5.0.0"
   }
 }
