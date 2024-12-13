@@ -1,8 +1,9 @@
 import fs from "fs/promises";
+import { fileURLToPath } from "url";
 
 export async function getFileSizeInKilobytes(fileUrl: URL): Promise<number> {
   try {
-    const filePath = fileUrl.pathname;
+    const filePath = fileURLToPath(fileUrl);
 
     // 轮询检查文件大小，确保文件写入完成
     let fileSizeInBytes = 0;
