@@ -96,7 +96,7 @@ function generateSitemapContent(
       return `Sitemap: ${defaultSitemap}`;
     } else {
       logger.warn(
-        "\x1b[33m`sitemap` is configured as true, but `AstroConfig.site` is not provided. Failed to generate default sitemap URL.\x1b[33m",
+        "`sitemap` is configured as true, but `AstroConfig.site` is not provided. Failed to generate default sitemap URL.",
       );
       return "";
     }
@@ -179,7 +179,6 @@ export function generate(
 
 export function logInfo(
   fileSize: number,
-  executionTime: number,
   logger: AstroIntegrationLogger,
   destDir: string,
 ) {
@@ -196,6 +195,6 @@ export function logInfo(
   }
 
   logger.info(
-    `\`robots.txt\` (${fileSize}KB) created at \`${path.relative(process.cwd(), destDir)}\` in ${executionTime}ms`,
+    `\`robots.txt\` (${fileSize}KB) created at \`${path.relative(process.cwd(), destDir)}\``,
   );
 }

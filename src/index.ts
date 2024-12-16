@@ -61,9 +61,7 @@ const defaults: RobotsOptions = {
 
 export default function robots(options?: RobotsOptions): AstroIntegration {
   let config: AstroConfig;
-
   let finalSiteMapHref: string;
-  let executionTime: number;
 
   const filename = "robots.txt";
   const opts = { ...defaults, ...options };
@@ -71,7 +69,7 @@ export default function robots(options?: RobotsOptions): AstroIntegration {
   return {
     name: "astro-robots",
     hooks: {
-      "astro:config:setup": ({ config: cfg }) => {
+      "astro:config:setup": ({ config: cfg, }) => {
         config = cfg;
         if (config.site) {
           finalSiteMapHref = new URL(config.base, config.site).href;
@@ -82,7 +80,7 @@ export default function robots(options?: RobotsOptions): AstroIntegration {
           if (req.url?.startsWith(`/${filename}`)) {
             res.setHeader("Content-Type", "text/plain");
             res.setHeader("Cache-Control", "no-cache");
-            res.end(generate(opts, finalSiteMapHref, logger),);
+            res.end(generate(opts, finalSiteMapHref, logger));
           } else {
             next();
           }
@@ -91,24 +89,20 @@ export default function robots(options?: RobotsOptions): AstroIntegration {
       "astro:build:done": async ({ dir, logger }) => {
         const fileURL = new URL(filename, dir);
         const destDir = fileURLToPath(dir);
+        const fileBuffer = generate(opts, finalSiteMapHref, logger);
 
         try {
           await fs.mkdir(destDir, { recursive: true });
-        } catch (error) {
-          logger.error(`Error creating directory: ${error}`);
-          return;
+          await fs.writeFile(fileURL, fileBuffer, "utf-8");
+          throw "done";
+        } catch (e) {
+          if( e === "done") {
+            const fileSize = getFileSizeInKilobytes(fileBuffer);
+            logInfo(fileSize, logger, destDir);
+          } else {
+            throw e;
+          }
         }
-
-        executionTime = measureExecutionTime(async () => {
-          await fs.writeFile(
-            fileURL,
-            generate(opts, finalSiteMapHref, logger),
-            "utf-8",
-          );
-        });
-
-        const fileSize = await getFileSizeInKilobytes(fileURL);
-        logInfo(fileSize, executionTime, logger, destDir);
       },
     },
   };
